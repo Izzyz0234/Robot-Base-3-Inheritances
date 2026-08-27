@@ -17,23 +17,16 @@ class RobotBase(ABC):
         """Get robot name."""
         return self._name
 
-
-    # @abstractmethod
     def report_status(self):
-        """Report the current status of the robot.
-        
-        Returns:
-            A string containing robot name, battery level, moving status, and sensor readings.
-        """
         return (f"Robot Name: {self._name!r}\n"
                 f"Battery Level: {Battery}\n"
                 f"Is Moving: {Motor!r}\n"
-                f"Sensor Readings: {Sensor!r}")
-
+                f"Sensor Readings: {Sensor!r}"
+                f"Type: {self.type!r}")
 
     def __str__(self):
         return f"RobotBase('{self._name!r}', {self._battery.get_percentage()}, {self._battery.current_level()!r}, {self._motor.is_running!r}, {Sensor!r})"
-    
+
     def __repr__(self):
         return (f"Robot Name: {self._name!r}\n"
                 "Battery: \n"
@@ -52,41 +45,65 @@ class RobotBase(ABC):
                 f"Sensor Get Reading: {self._sensor.get_reading()!r}\n")
 
 
+
 # Add 3 IS-A class
-class Arm(RobotBase):
-    def __init__(self, name, type):
+class Vacume(RobotBase):
+    def __init__(self, name, sucking):
         super().__init__(name)
         self._battery = Battery(100, 50)
-        self._motor = Motor(40, True)
+        self._motor = Motor(0, False)
         self._sensor = Sensor("object")
-        self.type = type
+        self.sucking = sucking
 
-    def report_status(self):
-        return (f"Robot Name: {self._name!r}\n"
-                f"Battery Level: {Battery}\n"
-                f"Is Moving: {Motor!r}\n"
-                f"Sensor Readings: {Sensor!r}"
-                f"Type: {self.type!r}")
+    def vacuming(self, vacuming):
+        if vacuming == True:
+            self.sucking == True
+
+class SecurityCamera(RobotBase):
+    def __init__(self, name):
+        super().__init__(name)
+        self._battery = Battery(100, 90)
+        self._motor = Motor(12, True)
+        self._sensor = Sensor("object")
+
+class PickupAndPutdown(RobotBase):
+    def __init__(self, name, is_holding):
+        super().__init__(name)
+        self._battery = Battery(100, 90)
+        self._motor = Motor(12, True)
+        self._sensor = Sensor("object")
+        self.is_holding = is_holding
+
+    def grabbing_item(self, grabbing):
+        if grabbing == True:
+            self.is_holding == True
+        
+
+    
+vacume = Vacume("Vacume", True)
+securityCamera = SecurityCamera("Security Camera")
+pickupAndPutDown = PickupAndPutdown("Pickup & Putdown", True)
+
+print(vacume.report_status)
+print(securityCamera.report_status)
+print(pickupAndPutDown.report_status)
 
 
+# print("Initial Robot Settings:")
+# robot = RobotBase("Bob")
 
-print("Initial Robot Settings:")
-robot = RobotBase("Bob")
-handRobot = Arm("Sandy", "Hand")
+# # Battery
+# robot._battery = Battery(100, 80)
+# robot._battery.drain(50)
 
-# Battery
-robot._battery = Battery(100, 80)
-robot._battery.drain(50)
+# # Motor
+# robot._motor = Motor(5, True)
+# # robot._motor.forward(20)
+# # robot._motor.stop()
+# robot._motor.set_speed(50)
 
-# Motor
-robot._motor = Motor(5, True)
-# robot._motor.forward(20)
-# robot._motor.stop()
-robot._motor.set_speed(50)
+# # Sensor
+# robot._sensor = Sensor("object")
 
-# Sensor
-robot._sensor = Sensor("object")
+# print(robot.report_status)
 
-print(robot.report_status)
-
-print(handRobot.report_status)
