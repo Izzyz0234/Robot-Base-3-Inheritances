@@ -1,8 +1,9 @@
+from abc import ABC, abstractmethod
 from battery import Battery
 from sensor import Sensor
 from motor import Motor
 
-class RobotBase:
+class RobotBase(ABC):
     """A base class for a robot with basic functionalities."""
 
     def __init__(self, name):
@@ -17,6 +18,7 @@ class RobotBase:
         return self._name
 
 
+    # @abstractmethod
     def report_status(self):
         """Report the current status of the robot.
         
@@ -31,14 +33,14 @@ class RobotBase:
 
     def __str__(self):
         return f"RobotBase('{self._name!r}', {self._battery.get_percentage()}, {self._battery.current_level()!r}, {self._motor.is_running!r}, {Sensor!r})"
-
+    
     def __repr__(self):
         return (f"Robot Name: {self._name!r}\n"
                 "Battery: \n"
                 f"Battery Level: {self._battery.current_level}\n"                
                 f"Battery Charge: {self._battery.charge()}\n"
                 f"Battery Persentage: {self._battery.get_percentage()}\n"                
-                f"Battery depleted: {self._battery.is_depleted()}\n"                
+                f"Battery depleted: {self._battery.is_depleted()}\n"  
 
                 "\nMotor: \n"
                 f"Speed: {self._motor._speed!r}\n"
@@ -49,8 +51,28 @@ class RobotBase:
                 f"Sensor Detect Obstacle: {self._sensor.detect_obstacle()!r}\n"
                 f"Sensor Get Reading: {self._sensor.get_reading()!r}\n")
 
+
+# Add 3 IS-A class
+class Arm(RobotBase):
+    def __init__(self, name, type):
+        super().__init__(name)
+        self._battery = Battery(100, 50)
+        self._motor = Motor(40, True)
+        self._sensor = Sensor("object")
+        self.type = type
+
+    def report_status(self):
+        return (f"Robot Name: {self._name!r}\n"
+                f"Battery Level: {Battery}\n"
+                f"Is Moving: {Motor!r}\n"
+                f"Sensor Readings: {Sensor!r}"
+                f"Type: {self.type!r}")
+
+
+
 print("Initial Robot Settings:")
 robot = RobotBase("Bob")
+handRobot = Arm("Sandy", "Hand")
 
 # Battery
 robot._battery = Battery(100, 80)
@@ -66,3 +88,5 @@ robot._motor.set_speed(50)
 robot._sensor = Sensor("object")
 
 print(robot.report_status)
+
+print(handRobot.report_status)
