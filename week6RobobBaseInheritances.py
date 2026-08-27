@@ -18,16 +18,18 @@ class RobotBase(ABC):
         return self._name
 
     def report_status(self):
-        return (f"Robot Name: {self._name!r}\n"
-                f"Battery Level: {Battery}\n"
-                f"Is Moving: {Motor!r}\n"
-                f"Sensor Readings: {Sensor!r}"
-                f"Type: {self.type!r}")
+        """Repots __repr__ or __str__ when called"""
+        return
 
     def __str__(self):
-        return f"RobotBase('{self._name!r}', {self._battery.get_percentage()}, {self._battery.current_level()!r}, {self._motor.is_running!r}, {Sensor!r})"
+        """Returns the robots stats"""
+        return (f"RobotBase {self._name!r} {self._battery.current_level} {self._battery.charge()} "
+                f"{self._battery.get_percentage()} {self._battery.is_depleted()}"
+                f"{self._motor._speed!r} {self._motor.is_running!r}"
+                f"{self._sensor.read_data()!r} {self._sensor.detect_obstacle()!r} {self._sensor.get_reading()!r}\n")
 
     def __repr__(self):
+        """Returns the robots stats"""
         return (f"Robot Name: {self._name!r}\n"
                 "Battery: \n"
                 f"Battery Level: {self._battery.current_level}\n"                
@@ -45,8 +47,6 @@ class RobotBase(ABC):
                 f"Sensor Get Reading: {self._sensor.get_reading()!r}\n")
 
 
-
-# Add 3 IS-A class
 class Vacume(RobotBase):
     def __init__(self, name, sucking):
         super().__init__(name)
