@@ -87,23 +87,3 @@ pickupAndPutDown = PickupAndPutdown("Pickup & Putdown", True)
 print(vacume.report_status)
 print(securityCamera.report_status)
 print(pickupAndPutDown.report_status)
-
-
-# print("Initial Robot Settings:")
-# robot = RobotBase("Bob")
-
-# # Battery
-# robot._battery = Battery(100, 80)
-# robot._battery.drain(50)
-
-# # Motor
-# robot._motor = Motor(5, True)
-# # robot._motor.forward(20)
-# # robot._motor.stop()
-# robot._motor.set_speed(50)
-
-# # Sensor
-# robot._sensor = Sensor("object")
-
-# print(robot.report_status)
-
