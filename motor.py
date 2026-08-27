@@ -1,5 +1,13 @@
 class Motor():
+    """Control the movement state and speed of a robot."""
+
     def __init__(self, speed, is_running):
+        """Initialize a motor.
+
+        Args:
+            speed: Initial motor speed.
+            is_running: Whether the motor is initially running.
+        """
         self._speed = speed
         self._is_running = is_running
 
@@ -19,6 +27,15 @@ class Motor():
         self._is_running = value
 
     def forward(self, distance):
+        """Move the robot forward by a specified distance.
+
+        Args:
+            distance: Distance to move forward.
+        Returns:
+            A movement status message, or ``None`` if the motor is stopped.
+        Raises:
+            ValueError: If distance is negative.
+        """
         if self._is_running == True:
             if distance > 0:
                 self._is_running = True
@@ -33,6 +50,15 @@ class Motor():
 
 
     def backward(self, distance):
+        """Move the robot backward by a specified distance.
+
+        Args:
+            distance: Distance to move backward.
+        Returns:
+            A movement status message, or ``None`` if the motor is stopped.
+        Raises:
+            ValueError: If distance is negative.
+        """
         if self._is_running == True:
             if distance > 0:
                 self._is_running = True
@@ -54,6 +80,13 @@ class Motor():
         return ("Robot Stopped")
 
     def set_speed(self, speed):
+        """Set the motor speed.
+
+        Args:
+            speed: New motor speed.
+        Raises:
+            ValueError: If speed is negative.
+        """
         if speed < 0:
             raise ValueError("Speed cannot be negative")
         self._speed = speed
