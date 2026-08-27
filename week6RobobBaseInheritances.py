@@ -51,7 +51,7 @@ class Vacume(RobotBase):
     def __init__(self, name, sucking):
         super().__init__(name)
         self._battery = Battery(100, 50)
-        self._motor = Motor(0, False)
+        self._motor = Motor(20, True)
         self._sensor = Sensor("object")
         self.sucking = sucking
 
@@ -62,20 +62,20 @@ class Vacume(RobotBase):
 class SecurityCamera(RobotBase):
     def __init__(self, name):
         super().__init__(name)
-        self._battery = Battery(100, 90)
-        self._motor = Motor(12, True)
+        self._battery = Battery(100, 100)
+        self._motor = Motor(0, False)
         self._sensor = Sensor("object")
 
 class PickupAndPutdown(RobotBase):
     def __init__(self, name, is_holding):
         super().__init__(name)
-        self._battery = Battery(100, 90)
-        self._motor = Motor(12, True)
+        self._battery = Battery(100, 40)
+        self._motor = Motor(10, True)
         self._sensor = Sensor("object")
         self.is_holding = is_holding
 
-    def grabbing_item(self, grabbing):
-        if grabbing == True:
+    def grabber(self, grabbing_item):
+        if grabbing_item == True:
             self.is_holding == True
         
 
