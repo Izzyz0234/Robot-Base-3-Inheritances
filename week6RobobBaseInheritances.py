@@ -97,47 +97,63 @@ class SecurityCamera(RobotBase):
     """Represent a stationary robot with a security camera sensor."""
 
     def __init__(self, name):
-        """Initialize a security camera robot.
-
-        Args:
-            name: Name used to identify the robot.
-        """
         super().__init__(name)
         self._battery = Battery(100, 100)
         self._motor = Motor(0, False)
         self._sensor = Sensor("object")
 
+    def read_sensor(self):
+        """Return the camera's monitored scene information."""
+        reading = self.get_reading()
+        return f"Camera view status: {reading}" if reading is not None else "Camera view status: no movement detected"
+
+    def perform_task(self):
+        """Monitor the area for motion or movement."""
+        return "Monitoring the area for movement"
+
+    def report_status(self):
+        """Report the security camera robot's status."""
+        return (
+            f"Name: {self._name!r}\nBattery Level: {self._battery.current_level}\n"
+            f"Motor Running: {self._motor.is_running}\n"
+            f"Status: {self.read_sensor()}\n"
+        )
+
+
 class PickupAndPutdown(RobotBase):
     """Represent a robot that can pick up and put down objects."""
 
     def __init__(self, name, is_holding):
-        """Initialize a pickup-and-putdown robot.
-
-        Args:
-            name: Name used to identify the robot.
-            is_holding: Whether the robot is currently holding an item.
-        """
         super().__init__(name)
         self._battery = Battery(100, 40)
         self._motor = Motor(10, True)
         self._sensor = Sensor("object")
-        self.is_holding = is_holding
+        self.is_holding = bool(is_holding)
 
-    def grabber(self, grabbing_item):
-        """Set the holding state when an item is grabbed.
+    def read_sensor(self):
+        """Return the pickup robot's object-detection message."""
+        reading = self.get_reading()
+        return f"Object detected: {reading}" if reading is not None else "No object detected"
 
-        Args:
-            grabbing_item: Whether the robot is grabbing an item.
-        """
-        if grabbing_item == True:
-            self.is_holding == True
-        
+    def perform_task(self):
+        """Pick up or set down an item depending on current state."""
+        self.is_holding = not self.is_holding
+        return "Picking up object" if self.is_holding else "Placing object down"
 
-    
-vacume = Vacume("Vacume", True)
-securityCamera = SecurityCamera("Security Camera")
-pickupAndPutDown = PickupAndPutdown("Pickup & Putdown", True)
+    def report_status(self):
+        """Report the pickup robot's status."""
+        return (
+            f"Name: {self._name!r}\nBattery Level: {self._battery.current_level}\n"
+            f"Object Held: {self.is_holding}\n"
+            f"Sensor Reading: {self.read_sensor()}\n"
+        )
 
-print(vacume.report_status)
-print(securityCamera.report_status)
-print(pickupAndPutDown.report_status)
+
+if __name__ == "__main__":
+    vacume = Vacume("Vacume", True)
+    securityCamera = SecurityCamera("Security Camera")
+    pickupAndPutDown = PickupAndPutdown("Pickup & Putdown", True)
+
+    print(vacume.report_status())
+    print(securityCamera.report_status())
+    print(pickupAndPutDown.report_status())
