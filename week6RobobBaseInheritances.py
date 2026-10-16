@@ -68,26 +68,30 @@ class Vacume(RobotBase):
     """Represent a robot that can vacuum."""
 
     def __init__(self, name, sucking):
-        """Initialize a vacuum robot.
-
-        Args:
-            name: Name used to identify the robot.
-            sucking: Whether the vacuum is currently sucking.
-        """
         super().__init__(name)
         self._battery = Battery(100, 50)
         self._motor = Motor(20, True)
         self._sensor = Sensor("object")
-        self.sucking = sucking
+        self.sucking = bool(sucking)
 
-    def vacuming(self, vacuming):
-        """Set the vacuuming state when vacuuming is requested.
+    def read_sensor(self):
+        """Return the vacuum's room-reading information."""
+        reading = self.get_reading()
+        return f"Vacuum sensor reading: {reading}" if reading is not None else "Vacuum sensor reading: no data"
 
-        Args:
-            vacuming: Whether vacuuming should be active.
-        """
-        if vacuming == True:
-            self.sucking == True
+    def perform_task(self):
+        """Activate the vacuum's cleaning behaviour."""
+        self.sucking = True
+        return "Vacuuming the floor"
+
+    def report_status(self):
+        """Report the vacuum robot's status."""
+        return (
+            f"Name: {self._name!r}\nBattery Level: {self._battery.current_level}\n"
+            f"Motor Speed: {self._motor._speed}\nVacuming: {self.sucking}\n"
+            f"Sensor Reading: {self.read_sensor()}\n"
+        )
+
 
 class SecurityCamera(RobotBase):
     """Represent a stationary robot with a security camera sensor."""
