@@ -1,17 +1,15 @@
 from abc import ABC, abstractmethod
+
 from battery import Battery
-from sensor import Sensor
 from motor import Motor
+from sensor import Sensor
+
 
 class RobotBase(ABC):
-    """Provide shared components and behavior for robot types."""
+    """Provide shared components and the required robot interface."""
 
     def __init__(self, name):
-        """Initialize a robot with its default components.
-
-        Args:
-            name: Name used to identify the robot.
-        """
+        """Initialize a robot with shared components."""
         self._name = name
         self._battery = Battery(100, 50)
         self._motor = Motor(1, True)
@@ -19,45 +17,51 @@ class RobotBase(ABC):
 
     @property
     def name(self):
-        """Return the robot's name.
-
-        Returns:
-            The robot name.
-        """
+        """Return the robot's name."""
         return self._name
 
-    def report_status(self):
-        """Report the robot's current status.
+    @property
+    def sensor_reading(self):
+        """Return the current sensor reading from the base interface."""
+        return self.get_reading()
 
-        Returns:
-            ``None`` in the base implementation.
-        """
-        return
+    def get_reading(self):
+        """Read the current sensor value through the shared interface."""
+        if hasattr(self._sensor, "get_reading"):
+            return self._sensor.get_reading()
+        return None
+
+    @abstractmethod
+    def read_sensor(self):
+        """Return the sensor data in a robot-specific format."""
+
+    @abstractmethod
+    def perform_task(self):
+        """Carry out the robot's specialised behaviour."""
+
+    @abstractmethod
+    def report_status(self):
+        """Return the current status message for this robot."""
 
     def __str__(self):
-        """Return a compact string containing the robot's status."""
-        return (f"RobotBase {self._name!r} {self._battery.current_level} {self._battery.charge()} "
-                f"{self._battery.get_percentage()} {self._battery.is_depleted()}"
-                f"{self._motor._speed!r} {self._motor.is_running!r}"
-                f"{self._sensor.read_data()!r} {self._sensor.detect_obstacle()!r} {self._sensor.get_reading()!r}\n")
+        """Return the robot's current status summary."""
+        return self.report_status()
 
     def __repr__(self):
-        """Return a detailed string representation of the robot."""
-        return (f"Robot Name: {self._name!r}\n"
-                "Battery: \n"
-                f"Battery Level: {self._battery.current_level}\n"                
-                f"Battery Charge: {self._battery.charge()}\n"
-                f"Battery Persentage: {self._battery.get_percentage()}\n"                
-                f"Battery depleted: {self._battery.is_depleted()}\n"  
-
-                "\nMotor: \n"
-                f"Speed: {self._motor._speed!r}\n"
-                f"Is Moving: {self._motor.is_running!r}\n"
-
-                "\nSensor: \n"
-                f"Sensor Read Data: {self._sensor.read_data()!r}\n"
-                f"Sensor Detect Obstacle: {self._sensor.detect_obstacle()!r}\n"
-                f"Sensor Get Reading: {self._sensor.get_reading()!r}\n")
+        """Return a detailed view of the robot state."""
+        return (
+            f"Robot Name: {self._name!r}\n"
+            "Battery: \n"
+            f"Battery Level: {self._battery.current_level}\n"
+            f"Battery Charge: {self._battery.charge()}\n"
+            f"Battery Percentage: {self._battery.get_percentage()}\n"
+            f"Battery depleted: {self._battery.is_depleted()}\n"
+            "\nMotor: \n"
+            f"Speed: {self._motor._speed!r}\n"
+            f"Is Moving: {self._motor.is_running!r}\n"
+            "\nSensor: \n"
+            f"Sensor Reading: {self.get_reading()!r}\n"
+        )
 
 
 class Vacume(RobotBase):
